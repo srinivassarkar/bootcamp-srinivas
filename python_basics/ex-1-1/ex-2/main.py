@@ -1,5 +1,5 @@
 import typer
-from say_hello import say_hello
+from ex_1 import say_hello
 
 app = typer.Typer()
 
@@ -9,5 +9,3 @@ def hello(name: str):
 
 if __name__ == "__main__":
     app()
-
-#used chatgpt
