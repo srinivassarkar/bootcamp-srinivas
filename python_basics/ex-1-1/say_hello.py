@@ -1,6 +1,6 @@
 from typing import Optional
 
-def greet(name: Optional[str] = None) -> str:
+def say_hello(name: Optional[str] = None) -> str:
     return f"Hello, {name or 'Guest'}"
 
 # print(greet(''))
