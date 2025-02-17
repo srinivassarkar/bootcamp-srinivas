@@ -42,7 +42,7 @@ poetry run python -m commands dynamic input.txt
 
 ## Another example of basic processing with an explicit output filename
 ```
-poetry run python commands.py basic input.txt --output-filename output.txt
+poetry run python commands.py dynamic input.txt --output-filename output.txt
 ```
 
 ---
