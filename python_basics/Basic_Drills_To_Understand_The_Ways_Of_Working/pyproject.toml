@@ -1,0 +1,20 @@
+[project]
+name = "say_hello_package"
+version = "0.2.0"
+description = "A simple hello world package"
+authors = [
+    {name = "Srinivas Sarkar", email = "srinivassarkar07@gmail.com"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.6"  
+
+dependencies = [
+    "typer>=0.4.0,<0.5.0",
+]
+
+[[tool.poetry.packages]]
+include = "ex_1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
