@@ -8,7 +8,8 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "typer (>=0.15.1,<0.16.0)"
+    "typer (>=0.15.1,<0.16.0)",
+    "pyyaml (>=6.0.2,<7.0.0)"
 ]
 
 [tool.poetry]
@@ -18,3 +19,4 @@ packages = [{include = "texttransform", from = "src"}]
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
