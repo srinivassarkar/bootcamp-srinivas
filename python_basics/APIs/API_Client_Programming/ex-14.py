@@ -2,7 +2,7 @@ import requests
 from typing import List, Dict
 
 def fetch_best_sellers() -> List[Dict]:
-    url = "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=WijMAVAOyKHdD27ubsG7GXZKI7L9DdD5"
+    #url = "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=WijMAVAOyKHdD27ubsG7GXZKI7L9DdD5"
     response = requests.get(url)
     
     if response.status_code != 200:

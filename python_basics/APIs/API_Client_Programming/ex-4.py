@@ -2,7 +2,7 @@ import requests
 import sys
 from typing import Dict
 
-API_KEY = "0233c7695f99f4daa61475a720a71307"  
+# API_KEY = "0233c7695f99f4daa61475a720a71307"  
 
 def fetch_weather(city: str, api_key: str) -> Dict:
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"

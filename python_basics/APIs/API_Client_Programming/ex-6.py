@@ -24,7 +24,7 @@ def fetch_user_repos(token: str, username: str) -> List[Dict]:
     return result["user"]["repositories"]["nodes"]
 
 if __name__ == "__main__":
-    token = "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"
+   # token = "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"
     username = "srinivassarkar"
     repos = fetch_user_repos(token, username)
     for repo in repos:
