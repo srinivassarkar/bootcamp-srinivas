@@ -1,8 +1,21 @@
 import requests
 from typing import List, Dict
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Access the environment variable
+nytimes_api_key = os.getenv('NYTIMES_API_KEY')
+
+
+
 
 def fetch_best_sellers() -> List[Dict]:
-    #url = "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=WijMAVAOyKHdD27ubsG7GXZKI7L9DdD5"
+
+    url = f"https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key={nytimes_api_key}"
+
     response = requests.get(url)
     
     if response.status_code != 200:
