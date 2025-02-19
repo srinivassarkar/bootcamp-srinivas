@@ -14,6 +14,10 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Basic"},
         )
+        
+        
+        
+        
     return credentials.username
 
 @app.get("/secure")
