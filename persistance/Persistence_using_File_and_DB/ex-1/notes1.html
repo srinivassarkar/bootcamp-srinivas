@@ -1,0 +1,13 @@
+Basic Serialization with Pickle:
+
+
+Why: Pickle is a Python module used for serializing and deserializing Python objects. It’s useful for saving the state of an object to a file and restoring it later.
+
+What: We’ll create a Person class with attributes name, educational_institutions, and colleagues. Then, we’ll serialize an instance of this class to a file using Pickle.
+
+How: Use the pickle.dump() method to serialize the object and pickle.load() to deserialize it.
+
+
+Example Flow: 
+Save: pickle.dump(p, file) → writes Person object to person.pkl as bytes.
+Load: pickle.load(file) → reads bytes from person.pkl, finds Person class in main.py, rebuilds the object.

@@ -1,0 +1,13 @@
+2. Deserialization with Pickle:
+
+
+Why: To restore the serialized object back into memory.
+
+What: Read the serialized file and recreate the Person object.
+
+How: Use pickle.load() to deserialize the object.
+
+
+Example Flow: 
+Save: pickle.dump(p, file) → writes Person object to person.pkl as bytes.
+Load: pickle.load(file) → reads bytes from person.pkl, finds Person class in main.py, rebuilds the object.
