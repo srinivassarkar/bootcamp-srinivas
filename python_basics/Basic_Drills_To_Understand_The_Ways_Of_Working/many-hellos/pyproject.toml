@@ -1,6 +1,6 @@
 [project]
-name = "say_helloo"
-version = "0.1.1"
+name = "many-hellos"
+version = "0.1.0"
 description = ""
 authors = [
     {name = "Srinivas Sarkar",email = "srinivassarkar07@gmail.com"}
@@ -12,7 +12,8 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{include = "hello_world", from = "src"}]
+packages = [{include = "many_hellos", from = "src"}]
+
 
 
 [build-system]
