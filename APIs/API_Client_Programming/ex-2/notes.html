@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch GitHub User Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        pre {
+            background-color: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .note {
+            background-color: #d9edf7;
+            border-left: 5px solid #31708f;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Fetch GitHub User Details</h1>
+    <pre>
+import requests
+import sys
+from typing import Dict
+
+def fetch_user_details(username: str) -> Dict:
+    url = f"https://api.github.com/users/{username}"
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <username>")
+        sys.exit(1)
+    username = sys.argv[1]
+    user_details = fetch_user_details(username)
+    print(f"Name: {user_details.get('name')}")
+    print(f"Public Repos: {user_details.get('public_repos')}")
+    </pre>
+
+</body>
+</html>
