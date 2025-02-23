@@ -1,0 +1,105 @@
+2025-02-23 23:29:13,557 INFO daemonizing the supervisord process
+2025-02-23 23:29:13,561 INFO supervisord started with pid 92683
+2025-02-23 23:29:14,567 INFO spawned: 'consumer1' with pid 92756
+2025-02-23 23:29:14,577 INFO spawned: 'consumer2' with pid 92757
+2025-02-23 23:29:14,585 INFO spawned: 'producer1' with pid 92758
+2025-02-23 23:29:15,587 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:29:15,587 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:29:15,587 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:35:02,092 WARN received SIGTERM indicating exit request
+2025-02-23 23:35:02,110 INFO waiting for consumer1, consumer2, producer1 to die
+2025-02-23 23:35:02,130 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-23 23:35:02,143 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-23 23:35:02,154 WARN stopped: consumer1 (terminated by SIGTERM)
+2025-02-23 23:40:07,470 INFO daemonizing the supervisord process
+2025-02-23 23:40:07,472 INFO supervisord started with pid 97113
+2025-02-23 23:40:08,480 INFO spawned: 'consumer1' with pid 97186
+2025-02-23 23:40:08,486 INFO spawned: 'consumer2' with pid 97187
+2025-02-23 23:40:08,498 INFO spawned: 'producer1' with pid 97188
+2025-02-23 23:40:09,508 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:40:09,508 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:40:09,508 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:43:17,787 WARN received SIGTERM indicating exit request
+2025-02-23 23:43:17,805 INFO waiting for consumer1, consumer2, producer1 to die
+2025-02-23 23:43:17,827 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-23 23:43:17,860 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-23 23:43:17,865 WARN stopped: consumer1 (terminated by SIGTERM)
+2025-02-23 23:45:31,776 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-23 23:45:31,778 INFO supervisord started with pid 99168
+2025-02-23 23:45:32,789 INFO spawned: 'consumer1' with pid 99228
+2025-02-23 23:45:32,802 INFO spawned: 'consumer2' with pid 99229
+2025-02-23 23:45:32,806 INFO spawned: 'producer1' with pid 99230
+2025-02-23 23:45:33,812 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:45:33,812 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:45:33,812 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:46:24,882 WARN received SIGINT indicating exit request
+2025-02-23 23:46:24,883 INFO waiting for consumer1, consumer2, producer1 to die
+2025-02-23 23:46:24,886 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-23 23:46:24,888 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-23 23:46:24,890 WARN stopped: consumer1 (terminated by SIGTERM)
+2025-02-23 23:52:44,191 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-23 23:52:44,194 INFO daemonizing the supervisord process
+2025-02-23 23:52:44,196 INFO supervisord started with pid 101382
+2025-02-23 23:52:45,200 INFO spawned: 'consumer1' with pid 101455
+2025-02-23 23:52:45,206 INFO spawned: 'consumer2' with pid 101456
+2025-02-23 23:52:45,210 INFO spawned: 'producer1' with pid 101457
+2025-02-23 23:52:46,213 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:52:46,213 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:52:46,213 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:58:55,885 INFO RPC interface 'supervisor' initialized
+2025-02-23 23:58:55,887 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-23 23:58:55,889 INFO daemonizing the supervisord process
+2025-02-23 23:58:55,892 INFO supervisord started with pid 104124
+2025-02-23 23:58:56,901 INFO spawned: 'consumer1' with pid 104197
+2025-02-23 23:58:56,914 INFO spawned: 'consumer2' with pid 104198
+2025-02-23 23:58:56,935 INFO spawned: 'producer1' with pid 104199
+2025-02-23 23:58:57,940 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:58:57,940 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:58:57,940 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-23 23:59:35,154 WARN exited: consumer1 (exit status 1; not expected)
+2025-02-23 23:59:36,157 INFO spawned: 'consumer1' with pid 104560
+2025-02-23 23:59:37,161 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:00:14,459 INFO waiting for consumer1 to stop
+2025-02-24 00:00:14,462 INFO waiting for consumer2 to stop
+2025-02-24 00:00:14,462 INFO waiting for producer1 to stop
+2025-02-24 00:00:14,470 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-24 00:00:14,473 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-24 00:00:14,475 WARN stopped: consumer1 (terminated by SIGTERM)
+2025-02-24 00:00:14,504 INFO spawned: 'consumer1' with pid 104865
+2025-02-24 00:00:14,509 INFO spawned: 'consumer2' with pid 104867
+2025-02-24 00:00:14,525 INFO spawned: 'producer1' with pid 104868
+2025-02-24 00:00:15,544 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:00:15,544 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:00:15,544 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:44:48,744 INFO waiting for consumer1, consumer2, producer1 to die
+2025-02-24 00:44:48,761 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-24 00:44:48,780 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-24 00:44:48,788 WARN stopped: consumer1 (terminated by SIGTERM)
+2025-02-24 00:45:00,999 INFO RPC interface 'supervisor' initialized
+2025-02-24 00:45:00,999 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-24 00:45:01,001 INFO daemonizing the supervisord process
+2025-02-24 00:45:01,002 INFO supervisord started with pid 119638
+2025-02-24 00:45:02,006 INFO spawned: 'consumer1' with pid 119714
+2025-02-24 00:45:02,010 INFO spawned: 'consumer2' with pid 119715
+2025-02-24 00:45:02,013 INFO spawned: 'producer1' with pid 119716
+2025-02-24 00:45:03,018 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:45:03,018 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:45:03,019 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:47:05,305 INFO waiting for consumer1, consumer2, producer1 to die
+2025-02-24 00:47:05,321 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-24 00:47:05,330 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-24 00:47:05,334 WARN stopped: consumer1 (terminated by SIGTERM)
+2025-02-24 00:56:13,789 INFO RPC interface 'supervisor' initialized
+2025-02-24 00:56:13,791 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-24 00:56:13,792 INFO daemonizing the supervisord process
+2025-02-24 00:56:13,795 INFO supervisord started with pid 124124
+2025-02-24 00:56:14,799 INFO spawned: 'consumer1' with pid 124197
+2025-02-24 00:56:14,806 INFO spawned: 'consumer2' with pid 124198
+2025-02-24 00:56:14,810 INFO spawned: 'producer1' with pid 124199
+2025-02-24 00:56:15,813 INFO success: consumer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:56:15,814 INFO success: consumer2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:56:15,814 INFO success: producer1 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-24 00:56:31,343 INFO waiting for consumer1, consumer2, producer1 to die
+2025-02-24 00:56:31,345 WARN stopped: producer1 (terminated by SIGTERM)
+2025-02-24 00:56:31,348 WARN stopped: consumer2 (terminated by SIGTERM)
+2025-02-24 00:56:31,350 WARN stopped: consumer1 (terminated by SIGTERM)
