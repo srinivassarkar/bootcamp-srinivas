@@ -1,0 +1,35 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env
+*.venv/
+
+# Runtime/generated files
+*.log
+*.pid
+*.sock
+*.db
+
+# Project-specific runtime dirs
+project1/persistent_queue_project/data/queue.db
+project1/persistent_queue_project/data/files/*
+project1/persistent_queue_project/log/*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+
+# Python packaging
+*.egg-info/
+dist/
+build/
