@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent Queue Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .flowchart {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .note {
+            font-style: italic;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Persistent Queue Project</h1>
+
+        <div class="section">
+            <h2>Overview</h2>
+            <p>A producer-consumer system with a persistent queue: producers submit jobs (file paths), consumers process them (add timestamps), managed by Supervisor, with Streamlit UI for monitoring and control.</p>
+        </div>
+
+        <div class="section">
+            <h2>Approach</h2>
+            <ul>
+                <li><strong>SQLite Queue</strong>: Persistent storage, atomic operations for job exclusivity.</li>
+                <li><strong>Supervisor</strong>: Manages multiple producers/consumers, auto-restarts on crashes.</li>
+                <li><strong>Streamlit</strong>: Simple UI for manager (resubmit/cancel) and ops (status).</li>
+                <li><strong>Python</strong>: Core logic in `producer.py`, `consumer.py`, `sqlite_queue.py`.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Components & Choices</h2>
+            <h3>PersistentQSQLite</h3>
+            <p><strong>What</strong>: SQLite-based queue implementation.<br>
+               <strong>Why</strong>: Lightweight, file-based persistence, atomic transactions.<br>
+               <strong>Instead of</strong>: Redis (complex setup), in-memory (no persistence).</p>
+
+            <h3>Producer</h3>
+            <p><strong>What</strong>: Generates random files every 5s, submits to queue.<br>
+               <strong>Why</strong>: Simulates job creation.<br>
+               <strong>Instead of</strong>: Manual input (less dynamic).</p>
+
+            <h3>Consumer</h3>
+            <p><strong>What</strong>: Processes jobs (adds timestamps), 7-15s delay.<br>
+               <strong>Why</strong>: Mimics real-world processing lag.<br>
+               <strong>Instead of</strong>: Instant (unrealistic).</p>
+
+            <h3>Supervisor</h3>
+            <p><strong>What</strong>: Runs 1 producer, 2 consumers.<br>
+               <strong>Why</strong>: Robust process management, crash recovery.<br>
+               <strong>Instead of</strong>: Manual scripts (no auto-restart), Honcho (less control).</p>
+
+            <h3>Streamlit</h3>
+            <p><strong>What</strong>: Manager UI (resubmit/cancel), Ops UI (status table).<br>
+               <strong>Why</strong>: Quick, interactive web interface.<br>
+               <strong>Instead of</strong>: FastAPI (overkill for local UI), Flask (more setup).</p>
+
+            <h3>Requirements.txt</h3>
+            <p><strong>What</strong>: Dependency list.<br>
+               <strong>Why</strong>: Simple, standard.<br>
+               <strong>Instead of</strong>: Poetry (extra complexity).</p>
+        </div>
+
+        <div class="section">
+            <h2>Flowchart</h2>
+            <div class="flowchart">
+                <pre>
+Producer → [Queue: SQLite] → Consumer
+   ↓             ↓              ↓
+Files         Status         Processed Files
+   ↓             ↓              ↓
+Manager UI ← Status → Ops UI
+                ↓
+           Supervisor (Restart)
+                </pre>
+            </div>
+        </div>
+
+        <div class="section note">
+            <p><strong>Note</strong>: This project was developed with assistance from Grok AI, created by xAI, for guidance, code generation, and troubleshooting.</p>
+        </div>
+    </div>
+</body>
+</html>
