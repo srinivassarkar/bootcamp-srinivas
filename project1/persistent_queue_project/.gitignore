@@ -1,0 +1,28 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# SQLite database
+data/queue.db
+
+# Generated files
+data/files/*
+
+# Supervisor logs and runtime files
+log/*
+supervisord.pid
+supervisor.sock
+
+# Virtual environment (if accidentally created)
+venv/
+.env
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+*.swp
