@@ -1,0 +1,19 @@
+# .gitignore
+# Purpose: Excludes unnecessary files from Git
+**/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+data/
+logs/
+*.sock
+*.pid
+.env
+.venv/
+*.egg-info/
+dist/
+build/
+coverage.xml
+.htmlcov/
+.coverage
