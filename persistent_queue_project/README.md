@@ -119,8 +119,47 @@ Run the following command to check if everything is set up correctly:
 poetry run pytest tests/ -v
 ```
 
+
 ## Frequently Asked Questions (FAQ)
 
-
+### 1. **What happens if a consumer crashes while processing a job?**
+The system uses a heartbeat mechanism to detect stalled jobs. If a consumer crashes, the job is reset to `PENDING` status after 5 minutes, allowing another consumer to pick it up.  
 
 ---
+
+### 2. **How does the system handle jobs that repeatedly crash consumers?**
+Jobs that cause repeated crashes are retried up to 3 times. After the third failure, the job is marked as `UNPROCESSABLE` and excluded from further processing.  
+
+---
+
+### 3. **Can I swap out the SQLite backend for another database?**
+Yes! The system uses a factory pattern (`get_queue()`) to abstract the backend implementation. You can replace SQLite with another database (e.g., Redis) by modifying only the `get_queue()` function.  
+
+---
+
+### 4. **How do I monitor the status of jobs?**
+The Ops UI provides real-time monitoring of job statuses. Access it at [http://localhost:8502](http://localhost:8502).  
+
+---
+
+### 5. **What happens if the system crashes entirely?**
+All jobs are stored persistently in the SQLite database. When the system restarts, it resumes processing from where it left off.  
+
+---
+
+### 6. **How do I increase the number of workers?**
+You can scale the system by adding more workers. Update the `supervisord.conf` file to include additional worker configurations.  
+
+---
+
+### 7. **Where are the logs stored?**
+Logs are stored in the `logs/` directory. You can check `logs/producer.log` and `logs/consumer.log` for detailed information.  
+
+---
+
+### 8. **How do I change the admin password for the Manager UI?**
+The default password is `admin123`. To change it, modify the relevant configuration file in the project.  
+
+---
+
+
