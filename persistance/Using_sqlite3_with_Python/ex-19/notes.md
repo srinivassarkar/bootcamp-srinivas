@@ -1,87 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fund Transfer Management in SQLite</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        pre {
-            background-color: #eaeaea;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        code {
-            font-family: 'Courier New', Courier, monospace;
-            color: #d14;
-        }
-        .note {
-            background-color: #fff3cd;
-            border-left: 6px solid #ffeeba;
-            padding: 10px;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
+# Fund Transfer Management in SQLite
 
-    <h1>Fund Transfer Management in SQLite</h1>
-    
-    <h2>Overview</h2>
-    <p>This code defines a function <code>transfer_funds</code> that demonstrates how to transfer funds between two accounts in a SQLite database using transaction management.</p>
-    
-    <h2>Key Components</h2>
-    <ul>
-        <li><strong>Database Connection:</strong> Establishes a connection to the SQLite database.</li>
-        <li><strong>Transaction Management:</strong> Uses a transaction to ensure that both debit and credit operations are treated as a single unit of work.</li>
-        <li><strong>Account Update:</strong> Updates the balance of the source account by deducting the transfer amount and updates the destination account by adding the same amount.</li>
-        <li><strong>Error Handling:</strong> Catches errors and rolls back the transaction if any issues occur during the fund transfer.</li>
-        <li><strong>Closing Connection:</strong> Ensures the database connection is closed after operations are complete.</li>
-    </ul>
-    
-    <h2>Code Breakdown</h2>
-    <pre><code>import sqlite3
+## Overview
 
-def transfer_funds(from_account, to_account, amount):
-    conn = sqlite3.connect('store.db')
-    cursor = conn.cursor()
-    try:
-        cursor.execute('BEGIN TRANSACTION')
-        cursor.execute('UPDATE accounts SET balance = balance - ? WHERE account_id = ?', (amount, from_account))
-        cursor.execute('UPDATE accounts SET balance = balance + ? WHERE account_id = ?', (amount, to_account))
-        conn.commit()
-    except sqlite3.Error as e:
-        conn.rollback()
-        print(f"Error: {e}")
-    finally:
-        conn.close()
+This code defines a function `transfer_funds` that demonstrates how to transfer funds between two accounts in a SQLite database using transaction management.
 
-if __name__ == "__main__":
-    transfer_funds(1, 2, 100)</code></pre>
-    
-    <h2>Approach Simplification</h2>
-    <p>The approach can be simplified into the following steps:</p>
-    <ol>
-        <li>Establish a connection to the SQLite database.</li>
-        <li>Begin a transaction to ensure that both operations are treated as a single unit.</li>
-        <li>Update the balance of the source account by deducting the transfer amount.</li>
-        <li>Update the balance of the destination account by adding the transfer amount.</li>
-        <li>Commit the transaction if both operations succeed; otherwise, roll back in case of an error.</li>
-        <li>Close the database connection after operations are complete.</li>
-    </ol>
+## Key Components
 
-    <div class="note">
-        <strong>Note:</strong> This content was generated using Blackbox AI.
-    </div>
+*   **Database Connection:** Establishes a connection to the SQLite database.
+*   **Transaction Management:** Uses a transaction to ensure that both debit and credit operations are treated as a single unit of work.
+*   **Account Update:** Updates the balance of the source account by deducting the transfer amount and updates the destination account by adding the same amount.
+*   **Error Handling:** Catches errors and rolls back the transaction if any issues occur during the fund transfer.
+*   **Closing Connection:** Ensures the database connection is closed after operations are complete.
 
-</body>
-</html>
+
+## Approach Simplification
+
+The approach can be simplified into the following steps:
+
+1.  Establish a connection to the SQLite database.
+2.  Begin a transaction to ensure that both operations are treated as a single unit.
+3.  Update the balance of the source account by deducting the transfer amount.
+4.  Update the balance of the destination account by adding the transfer amount.
+5.  Commit the transaction if both operations succeed; otherwise, roll back in case of an error.
+6.  Close the database connection after operations are complete.
+
+<div class="note">**Note:** This content was generated using Blackbox AI.</div>

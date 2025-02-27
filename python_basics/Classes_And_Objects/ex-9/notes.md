@@ -1,57 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Employee and Department Classes Example</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        pre {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 10px;
-            overflow-x: auto;
-        }
-        .content {
-            margin-bottom: 20px;
-        }
-        .note {
-            background-color: #e7f3fe;
-            border-left: 6px solid #2196F3;
-            padding: 10px;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
+# Python Employee and Department Classes Example
 
-    <h1>Python Employee and Department Classes Example</h1>
+<div class="content">
 
-    <div class="content">
-        <h2>Problem Approach</h2>
-        <p>This Python code defines two classes: <code>Employee</code> and <code>Department</code>. The <code>Employee</code> class represents an employee with a name and position, while the <code>Department</code> class manages a collection of employees.</p>
-        
-        <h3>Why?</h3>
-        <p>Organizing related data and behavior into classes allows for better structure and management of code, making it easier to maintain and extend.</p>
-        
-        <h3>What?</h3>
-        <p>The <code>Department</code> class can add employees and list them, providing a way to represent a department with its employees.</p>
-        
-        <h3>How?</h3>
-        <p>The <code>Department</code> class initializes its attributes and provides methods to add employees and list them. The <code>list_employees</code> method prints the names and positions of employees in the department.</p>
-    </div>
+## Problem Approach
 
-    <h2>Python Code</h2>
-    <pre>
-class Employee:
+This Python code defines two classes: `Employee` and `Department`. The `Employee` class represents an employee with a name and position, while the `Department` class manages a collection of employees.
+
+### Why?
+
+Organizing related data and behavior into classes allows for better structure and management of code, making it easier to maintain and extend.
+
+### What?
+
+The `Department` class can add employees and list them, providing a way to represent a department with its employees.
+
+### How?
+
+The `Department` class initializes its attributes and provides methods to add employees and list them. The `list_employees` method prints the names and positions of employees in the department.
+
+</div>
+
+## Python Code
+
+<pre>class Employee:
     def __init__(self, name, position):
         self.name = name
         self.position = position
@@ -69,9 +40,4 @@ class Department:
             print(f"{employee.name} works as {employee.position} in {self.name}")
     </pre>
 
-    <div class="note">
-        <strong>Note:</strong> This code demonstrates the creation of classes in Python to represent employees and their associated department.
-    </div>
-
-</body>
-</html>
+<div class="note">**Note:** This code demonstrates the creation of classes in Python to represent employees and their associated department.</div>
