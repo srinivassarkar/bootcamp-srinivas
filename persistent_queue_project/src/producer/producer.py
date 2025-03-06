@@ -18,9 +18,10 @@ LOG_DIR = os.getenv("JOBQUEUE_LOG_DIR", "logs")
 logging.basicConfig(
     level=logging.INFO,
     filename=f"{LOG_DIR}/producer.log",
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
 
 class Producer:
     """Generates unique file jobs and enqueues them every 5 seconds."""
@@ -52,17 +53,18 @@ class Producer:
             try:
                 job_id = self.generate_file()
                 self.queue.enqueue(job_id)
-                logger.info(f"Enqueued job_id: {job_id}")
+                logger.info(f"Enqueued job_id: {job_id}")  # One log here
                 time.sleep(5)
             except Exception as e:
                 logger.error(f"Producer run error: {e}")
-                time.sleep(1)  # Backoff on failure
+                time.sleep(1)
         logger.info("Producer stopped")
 
     def _shutdown_signal(self, signum, frame) -> None:
         """Handle shutdown signals gracefully."""
         logger.info(f"Producer received signal {signum}, shutting down")
         self.running = False
+
 
 if __name__ == "__main__":
     queue = get_queue()

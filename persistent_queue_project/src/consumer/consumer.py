@@ -18,9 +18,10 @@ LOG_DIR = os.getenv("JOBQUEUE_LOG_DIR", "logs")
 logging.basicConfig(
     level=logging.INFO,
     filename=f"{LOG_DIR}/consumer.log",
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
+
 
 class Consumer:
     """Processes file jobs from queue, updates with timestamps."""
@@ -55,12 +56,22 @@ class Consumer:
             try:
                 job_id = self.queue.dequeue()
                 if job_id:
+                    logger.info(f"Dequeued job_id: {job_id}")
                     self.process_job(job_id)
-                    self.queue.heartbeat()  # Periodic ping
-                time.sleep(random.uniform(7, 15))
+                    self.queue.heartbeat()
+                else:
+                    logger.debug("No jobs to dequeue—queue empty or locked")
+                time.sleep(random.uniform(1, 3))  # Was 7-15s—faster now
             except Exception as e:
                 logger.error(f"Consumer run error: {e}")
-                time.sleep(1)  # Backoff on error
+                time.sleep(1)
+        logger.info(f"Consumer {self.queue.consumer_id} shutting down—draining queue")
+        # Drain remaining jobs
+        while self.running:
+            job_id = self.queue.dequeue()
+            if not job_id:
+                break
+            self.process_job(job_id)
         logger.info(f"Consumer {self.queue.consumer_id} stopped")
         self.queue.shutdown()
 
@@ -68,6 +79,7 @@ class Consumer:
         """Handle shutdown signals gracefully."""
         logger.info(f"Consumer {self.queue.consumer_id} received signal {signum}, shutting down")
         self.running = False
+
 
 if __name__ == "__main__":
     consumer = Consumer()
