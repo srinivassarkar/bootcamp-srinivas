@@ -4,6 +4,7 @@
 import time
 from datetime import datetime, timedelta
 
+import pandas as pd
 import streamlit as st
 
 from src.jobqueue import PersistentQInterface, get_queue
@@ -25,7 +26,7 @@ def auto_refresh() -> None:
 
 status = queue.get_status() or []
 df = pd.DataFrame(status)
-stale_jobs = df[(df["status"] == "PROCESSING") & 
+stale_jobs = df[(df["status"] == "PROCESSING") &
                 (df["last_heartbeat"] < (datetime.now() - timedelta(minutes=5)).isoformat())]
 if not stale_jobs.empty:
     st.warning(f"Detected {len(stale_jobs)} stalled jobs—check Manager UI!")
