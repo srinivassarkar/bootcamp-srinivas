@@ -77,6 +77,7 @@ poetry run python -m streamlit run src/ui/ops.py
 ## How It Works
 
 Here’s a simple explanation of how everything fits together:
+
 ```
 +----------------+       +----------------+       +----------------+
 |   Producer     | ----> | Persistent     | <---- |   Consumers    |
@@ -89,12 +90,15 @@ Here’s a simple explanation of how everything fits together:
 | (You’re in Charge)    | (Watch Progress)|
 +----------------+       +----------------+
 ```
+
 ---
+
 **1. Producer**: Adds jobs (e.g., files) to the queue every 5 seconds with a unique ID like `data/files/abc123.txt`.
 
 **2. Persistent Queue (SQLite)**: Stores jobs, tracks status (`PENDING`, `PROCESSING`, `COMPLETED`, etc.), and ensures nothing’s lost if the system crashes. Uses SQLite for reliability.
 
 **3. Consumers**: Workers (up to 10) grab jobs and process them:
+
 - **Start**: `PENDING` → `PROCESSING`.
 - **Work**: Add timestamps to files, send heartbeats every ~1s during long jobs.
 - **Finish**: `COMPLETED` or retry 3x on failure (e.g., missing file), then `UNPROCESSABLE`.
@@ -106,6 +110,7 @@ Here’s a simple explanation of how everything fits together:
 **6. Crash/Hang Handling**: If a worker crashes (e.g., `kill -9`) or hangs (no heartbeat), the queue’s heartbeat check (every 10s) spots it. Jobs stalled >30s go back to `PENDING`. Supervisor restarts crashed workers—system keeps rolling.
 
 **7. Manager UI**: Log in, see all jobs live (refreshes every 5s):
+
 - **Status**: `PENDING`, `PROCESSING`, `COMPLETED`, `UNPROCESSABLE`.
 - **Details**: Worker ID, heartbeats, retries.
 - **Actions**: Resubmit failed jobs, cancel unwanted ones.
@@ -116,7 +121,6 @@ Here’s a simple explanation of how everything fits together:
 ### In Action
 
 The Producer adds a job. It sits in the Queue as `PENDING`. A Consumer picks it up, marks it `PROCESSING`, and sends heartbeats while working. If it crashes, the Queue requeues it after 30 seconds. Once done, it’s `COMPLETED`—all visible in the UIs. Simple, tough, and reliable.
-
 
 ## Stopping the Application
 
@@ -144,36 +148,43 @@ poetry run pytest tests/ -v
 
 ### FAQ and Feedback Addressed
 
-1. **What happens if a consumer crashes while processing a task?**  
-   - Our heartbeat system checks every 10 seconds.  
-   - If a consumer crashes (e.g., terminated unexpectedly), its task is marked `PENDING` again after 30 seconds, allowing another worker to take over.  
-   - **Ensures no task is left incomplete.**  
-   - **Feedback: Crash/Hang Logic Missing – Resolved**: The heartbeat mechanism and automatic worker restarts by Supervisor ensure seamless recovery.  
+1. **What happens if a consumer crashes while processing a task?**
+
+   - The heartbeat system ensures tasks aren’t lost. Workers send a heartbeat every ~1 second while processing a task to say, “I’m still here.”
+   - A separate queue check runs every 10 seconds to spot any workers that stop responding (e.g., due to a crash). If a task’s heartbeat is older than 30 seconds, it’s reset to PENDING, and another worker picks it up.
+   - If a consumer crashes (e.g., terminated unexpectedly), its task is marked `PENDING` again after 30 seconds, allowing another worker to take over.
+   - **Ensures no task is left incomplete.**
+   - **Feedback: Crash/Hang Logic Missing – Resolved**: The heartbeat mechanism and automatic worker restarts by Supervisor ensure seamless recovery.
    - **Test**: Use `kill -9 <consumer_pid>`—watch the UI shift from `PROCESSING` to `PENDING` within ~30-40 seconds, with logs noting "Checked and requeued stalled jobs."
 
-2. **How does the system handle tasks that repeatedly fail?**  
-   - If a task fails (e.g., due to a missing file), it retries up to 3 times with increasing delays (1s, 2s, 4s).  
-   - After the third failure, it’s marked `UNPROCESSABLE` and flagged for review—no endless loops.  
-   - **Feedback: Definition of Failed Job Not Clear – Resolved**: A failed task is one that can’t complete, retries 3 times, then becomes `UNPROCESSABLE`. The UI and logs show retries and status changes clearly.  
+2. **How does the system handle tasks that repeatedly fail?**
+
+   - If a task fails (e.g., due to a missing file), it retries up to 3 times with increasing delays (1s, 2s, 4s).
+   - After the third failure, it’s marked `UNPROCESSABLE` and flagged for review—no endless loops.
+   - **Feedback: Definition of Failed Job Not Clear – Resolved**: A failed task is one that can’t complete, retries 3 times, then becomes `UNPROCESSABLE`. The UI and logs show retries and status changes clearly.
    - **Test**: Delete a file—see retries climb to 3, then `UNPROCESSABLE`.
 
-3. **Can I use a different database instead of SQLite?**  
+3. **Can I use a different database instead of SQLite?**
+
    - Yes! The `get_queue()` function makes it easy to swap SQLite for another backend, like Redis, with minimal changes—just update that function.
 
-4. **How do I monitor task progress?**  
+4. **How do I monitor task progress?**
+
    - Visit the Ops UI at `http://localhost:8502` for real-time updates on task statuses, worker assignments, and heartbeats.
 
-5. **What if the entire system crashes?**  
-   - Tasks are safely stored in SQLite.  
+5. **What if the entire system crashes?**
+
+   - Tasks are safely stored in SQLite.
    - Restart with `./run.sh`, and it resumes right where it stopped—no data lost.
 
-6. **How do I add more workers?**  
-   - Edit `supervisord.conf` and adjust `numprocs` (e.g., `numprocs=10`).  
+6. **How do I add more workers?**
+
+   - Edit `supervisord.conf` and adjust `numprocs` (e.g., `numprocs=10`).
    - More workers start automatically and restart if they fail.
 
-
-7. **Does it work as intended?**  
-   - Absolutely—tasks flow from `PENDING` to `PROCESSING` to `COMPLETED`, with retries for failures and recovery from crashes, all visible in the UI and logs.  
-   - **Feedback: Doesn’t Work as Designed – Resolved**: The latest updates to `consumer.py`, `sqlite_backend.py`, and `manager.py` ensure full functionality.  
+7. **Does it work as intended?**
+   - Absolutely—tasks flow from `PENDING` to `PROCESSING` to `COMPLETED`, with retries for failures and recovery from crashes, all visible in the UI and logs.
+   - **Feedback: Doesn’t Work as Designed – Resolved**: The latest updates to `consumer.py`, `sqlite_backend.py`, and `manager.py` ensure full functionality.
    - **Test**: Run `./run.sh`, crash a worker—UI and logs confirm the system recovers and completes tasks as designed.
+
 ---
