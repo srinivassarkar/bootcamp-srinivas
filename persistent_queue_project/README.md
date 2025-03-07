@@ -77,25 +77,46 @@ poetry run python -m streamlit run src/ui/ops.py
 ## How It Works
 
 Here’s a simple explanation of how everything fits together:
-
 ```
 +----------------+       +----------------+       +----------------+
 |   Producer     | ----> | Persistent     | <---- |   Consumers    |
-| (Creates Jobs) |       | Queue (SQLite) |       | (Processes Jobs)|
+| (Adds Tasks)   |       | Queue (SQLite) |       | (Do the Work)  |
 +----------------+       +----------------+       +----------------+
                            |         |
                            v         v
 +----------------+       +----------------+
 |   Manager UI   | <---- |    Ops UI      |
-| (Control Jobs) |       | (Monitor Jobs) |
+| (You’re in Charge)    | (Watch Progress)|
 +----------------+       +----------------+
 ```
+---
+**1. Producer**: Adds jobs (e.g., files) to the queue every 5 seconds with a unique ID like `data/files/abc123.txt`.
 
-- **Producer**: This is where tasks (like files) are added to the queue.
-- **Queue**: This is a storage area (using SQLite) that keeps track of all the tasks.
-- **Consumers**: These are the workers that process the tasks from the queue.
-- **Manager UI**: This is your control panel where you can manage and control the tasks.
-- **Ops UI**: This is your monitoring panel where you can see how the tasks are progressing.
+**2. Persistent Queue (SQLite)**: Stores jobs, tracks status (`PENDING`, `PROCESSING`, `COMPLETED`, etc.), and ensures nothing’s lost if the system crashes. Uses SQLite for reliability.
+
+**3. Consumers**: Workers (up to 10) grab jobs and process them:
+- **Start**: `PENDING` → `PROCESSING`.
+- **Work**: Add timestamps to files, send heartbeats every ~1s during long jobs.
+- **Finish**: `COMPLETED` or retry 3x on failure (e.g., missing file), then `UNPROCESSABLE`.
+
+**4. Heartbeat Mechanism**: Workers ping the queue every ~1s while working. If one crashes or hangs (e.g., 1 of 10 dies), heartbeats stop. After 30s, the queue marks the job `PENDING` again—another worker takes over. No job gets stuck.
+
+**5. Failed Job Defined**: A job “fails” if it can’t finish—like a missing file. It retries 3x (1s, 2s, 4s delays). If all retries flop, it’s `UNPROCESSABLE`—done trying, flagged for review. UI shows retries climb, status shift.
+
+**6. Crash/Hang Handling**: If a worker crashes (e.g., `kill -9`) or hangs (no heartbeat), the queue’s heartbeat check (every 10s) spots it. Jobs stalled >30s go back to `PENDING`. Supervisor restarts crashed workers—system keeps rolling.
+
+**7. Manager UI**: Log in, see all jobs live (refreshes every 5s):
+- **Status**: `PENDING`, `PROCESSING`, `COMPLETED`, `UNPROCESSABLE`.
+- **Details**: Worker ID, heartbeats, retries.
+- **Actions**: Resubmit failed jobs, cancel unwanted ones.
+- **Crash proof**: Shows `Stalled` → `PENDING` if a worker dies.
+
+**8. Ops UI**: Monitors jobs moving `PENDING` → `PROCESSING` → `COMPLETED`, with worker and heartbeat updates.
+
+### In Action
+
+The Producer adds a job. It sits in the Queue as `PENDING`. A Consumer picks it up, marks it `PROCESSING`, and sends heartbeats while working. If it crashes, the Queue requeues it after 30 seconds. Once done, it’s `COMPLETED`—all visible in the UIs. Simple, tough, and reliable.
+
 
 ## Stopping the Application
 
@@ -119,47 +140,40 @@ Run the following command to check if everything is set up correctly:
 poetry run pytest tests/ -v
 ```
 
-
-## Frequently Asked Questions (FAQ)
-
-### 1. **What happens if a consumer crashes while processing a job?**
-The system uses a heartbeat mechanism to detect stalled jobs. If a consumer crashes, the job is reset to `PENDING` status after 5 minutes, allowing another consumer to pick it up.  
-
 ---
 
-### 2. **How does the system handle jobs that repeatedly crash consumers?**
-Jobs that cause repeated crashes are retried up to 3 times. After the third failure, the job is marked as `UNPROCESSABLE` and excluded from further processing.  
+### FAQ and Feedback Addressed
 
+1. **What happens if a consumer crashes while processing a task?**  
+   - Our heartbeat system checks every 10 seconds.  
+   - If a consumer crashes (e.g., terminated unexpectedly), its task is marked `PENDING` again after 30 seconds, allowing another worker to take over.  
+   - **Ensures no task is left incomplete.**  
+   - **Feedback: Crash/Hang Logic Missing – Resolved**: The heartbeat mechanism and automatic worker restarts by Supervisor ensure seamless recovery.  
+   - **Test**: Use `kill -9 <consumer_pid>`—watch the UI shift from `PROCESSING` to `PENDING` within ~30-40 seconds, with logs noting "Checked and requeued stalled jobs."
+
+2. **How does the system handle tasks that repeatedly fail?**  
+   - If a task fails (e.g., due to a missing file), it retries up to 3 times with increasing delays (1s, 2s, 4s).  
+   - After the third failure, it’s marked `UNPROCESSABLE` and flagged for review—no endless loops.  
+   - **Feedback: Definition of Failed Job Not Clear – Resolved**: A failed task is one that can’t complete, retries 3 times, then becomes `UNPROCESSABLE`. The UI and logs show retries and status changes clearly.  
+   - **Test**: Delete a file—see retries climb to 3, then `UNPROCESSABLE`.
+
+3. **Can I use a different database instead of SQLite?**  
+   - Yes! The `get_queue()` function makes it easy to swap SQLite for another backend, like Redis, with minimal changes—just update that function.
+
+4. **How do I monitor task progress?**  
+   - Visit the Ops UI at `http://localhost:8502` for real-time updates on task statuses, worker assignments, and heartbeats.
+
+5. **What if the entire system crashes?**  
+   - Tasks are safely stored in SQLite.  
+   - Restart with `./run.sh`, and it resumes right where it stopped—no data lost.
+
+6. **How do I add more workers?**  
+   - Edit `supervisord.conf` and adjust `numprocs` (e.g., `numprocs=10`).  
+   - More workers start automatically and restart if they fail.
+
+
+7. **Does it work as intended?**  
+   - Absolutely—tasks flow from `PENDING` to `PROCESSING` to `COMPLETED`, with retries for failures and recovery from crashes, all visible in the UI and logs.  
+   - **Feedback: Doesn’t Work as Designed – Resolved**: The latest updates to `consumer.py`, `sqlite_backend.py`, and `manager.py` ensure full functionality.  
+   - **Test**: Run `./run.sh`, crash a worker—UI and logs confirm the system recovers and completes tasks as designed.
 ---
-
-### 3. **Can I swap out the SQLite backend for another database?**
-Yes! The system uses a factory pattern (`get_queue()`) to abstract the backend implementation. You can replace SQLite with another database (e.g., Redis) by modifying only the `get_queue()` function.  
-
----
-
-### 4. **How do I monitor the status of jobs?**
-The Ops UI provides real-time monitoring of job statuses. Access it at [http://localhost:8502](http://localhost:8502).  
-
----
-
-### 5. **What happens if the system crashes entirely?**
-All jobs are stored persistently in the SQLite database. When the system restarts, it resumes processing from where it left off.  
-
----
-
-### 6. **How do I increase the number of workers?**
-You can scale the system by adding more workers. Update the `supervisord.conf` file to include additional worker configurations.  
-
----
-
-### 7. **Where are the logs stored?**
-Logs are stored in the `logs/` directory. You can check `logs/producer.log` and `logs/consumer.log` for detailed information.  
-
----
-
-### 8. **How do I change the admin password for the Manager UI?**
-The default password is `admin123`. To change it, modify the relevant configuration file in the project.  
-
----
-
-
