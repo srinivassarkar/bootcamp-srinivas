@@ -168,21 +168,17 @@ poetry run pytest tests/ -v
 
    - Yes! The `get_queue()` function makes it easy to swap SQLite for another backend, like Redis, with minimal changes—just update that function.
 
-4. **How do I monitor task progress?**
-
-   - Visit the Ops UI at `http://localhost:8502` for real-time updates on task statuses, worker assignments, and heartbeats.
-
-5. **What if the entire system crashes?**
+4. **What if the entire system crashes?**
 
    - Tasks are safely stored in SQLite.
    - Restart with `./run.sh`, and it resumes right where it stopped—no data lost.
 
-6. **How do I add more workers?**
+5. **How do I add more workers?**
 
    - Edit `supervisord.conf` and adjust `numprocs` (e.g., `numprocs=10`).
    - More workers start automatically and restart if they fail.
 
-7. **Does it work as intended?**
+6. **Does it work as intended?**
    - Absolutely—tasks flow from `PENDING` to `PROCESSING` to `COMPLETED`, with retries for failures and recovery from crashes, all visible in the UI and logs.
    - **Feedback: Doesn’t Work as Designed – Resolved**: The latest updates to `consumer.py`, `sqlite_backend.py`, and `manager.py` ensure full functionality.
    - **Test**: Run `./run.sh`, crash a worker—UI and logs confirm the system recovers and completes tasks as designed.
