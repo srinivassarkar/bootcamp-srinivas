@@ -5,6 +5,7 @@ import logging
 import os
 import signal
 import time
+from datetime import datetime
 from uuid import uuid4
 
 from dotenv import load_dotenv
@@ -35,16 +36,18 @@ class Producer:
         signal.signal(signal.SIGINT, self._shutdown_signal)
 
     def generate_file(self) -> str:
-        """Generate a unique file; return its path as job_id."""
-        try:
-            filename = f"{uuid4()}.txt"
-            job_id = os.path.join(self.output_dir, filename)
-            with open(job_id, "w") as f:
-                f.write("Sample content\n")
-            return job_id
-        except Exception as e:
-            logger.error(f"Failed to generate file: {e}")
-            raise
+        """Generate a job file and return its ID."""
+        job_id = f"data/files/{uuid4()}.txt"
+        # Optional: Validate against JOB_ID_PATTERN
+        import re
+
+        pattern = os.getenv("JOB_ID_PATTERN", r"^data/files/[a-f0-9-]+\.txt$")
+        if not re.match(pattern, job_id):
+            raise ValueError(f"Generated job_id {job_id} doesn’t match pattern {pattern}")
+        os.makedirs("data/files", exist_ok=True)
+        with open(job_id, "w") as f:
+            f.write(f"Job created at {datetime.now().isoformat()}\n")
+        return job_id
 
     def run(self) -> None:
         """Run producer loop, enqueuing jobs every 5 seconds."""
@@ -53,7 +56,7 @@ class Producer:
             try:
                 job_id = self.generate_file()
                 self.queue.enqueue(job_id)
-                logger.info(f"Enqueued job_id: {job_id}")  # One log here
+                logger.info(f"Enqueued job_id: {job_id}")  # Only log here
                 time.sleep(5)
             except Exception as e:
                 logger.error(f"Producer run error: {e}")
