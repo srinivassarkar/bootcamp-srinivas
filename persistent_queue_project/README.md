@@ -74,6 +74,23 @@ poetry run python -m streamlit run src/ui/ops.py
 
 - **Access the Ops UI**: Open your web browser and go to [http://localhost:8502](http://localhost:8502).
 
+## Screenshots
+
+### Manager UI Displaying Job Queue and Actions
+
+![Manager UI Results](manager_result_screenshot.png)  
+_View job details, retries, and take actions like resubmit or cancel._
+
+### Filtering Jobs by Status in Manager UI
+
+![Filtering Jobs by Status](path/to/filter_screenshot.png)  
+_Select a status to view specific jobs in the Manager UI._
+
+### Ops UI Monitoring Job Progress in Real Time
+
+![Ops UI](path/to/ops_ui_screenshot.png)  
+_Monitor live job statuses and worker activity._
+
 ## How It Works
 
 Here’s a simple explanation of how everything fits together:

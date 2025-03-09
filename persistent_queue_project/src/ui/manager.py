@@ -3,15 +3,13 @@
 
 import os
 from datetime import datetime, timedelta
-
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
-
 from src.jobqueue import PersistentQInterface, get_queue
 
 load_dotenv()
-MANAGER_PASSWORD = os.getenv("MANAGER_PASSWORD")
+MANAGER_PASSWORD = os.getenv("MANAGER_PASSWORD", "secure123")
 
 st.set_page_config(page_title="Queue Manager", layout="wide", initial_sidebar_state="collapsed")
 
@@ -20,7 +18,7 @@ if "authenticated" not in st.session_state:
 if "refresh_count" not in st.session_state:
     st.session_state.refresh_count = 0
 if "job_history" not in st.session_state:
-    st.session_state.job_history = pd.DataFrame()  # Initialize empty
+    st.session_state.job_history = pd.DataFrame()
 
 # Login screen
 if not st.session_state.authenticated:
@@ -54,8 +52,7 @@ if not df.empty:
     df["consumer_id"] = df["consumer_id"].fillna("N/A")
     df["last_heartbeat"] = df["last_heartbeat"].fillna("N/A")
     if "retries" not in df.columns:
-        df["retries"] = 0  # Default if missing
-    # Update job_history—concat with existing
+        df["retries"] = 0
     st.session_state.job_history = pd.concat([st.session_state.job_history, df]).drop_duplicates(
         subset=["id"], keep="last"
     )
@@ -65,17 +62,33 @@ if st.button("🔍 Check Stalled Jobs", key="check_stalled"):
     st.success("Checked stalled jobs; requeued if needed.")
     st.rerun()
 
+# Filter by status
+status_options = [
+    "All",
+    "PENDING",
+    "PROCESSING",
+    "COMPLETED",
+    "FAILED",
+    "UNPROCESSABLE",
+    "CANCELED",
+]
+selected_status = st.selectbox("Filter by Status", status_options, index=0)
+filtered_jobs = (
+    st.session_state.job_history
+    if selected_status == "All"
+    else st.session_state.job_history[st.session_state.job_history["status"] == selected_status]
+)
+
 # Auto-refresh every ~5s
 st.session_state.refresh_count += 1
 if st.session_state.refresh_count % 5 == 0:
     st.rerun()
 
-if st.session_state.job_history.empty:
-    st.warning("No jobs in queue!")
+if filtered_jobs.empty:
+    st.warning(f"No jobs found for status: {selected_status}")
 else:
 
     def get_status_emoji(status: str) -> str:
-        """Map job status to emoji."""
         return {
             "COMPLETED": "✅",
             "FAILED": "❌",
@@ -105,8 +118,7 @@ else:
     col_headers[5].write("**Stalled**")
     col_headers[6].write("**Actions**")
 
-    # Show job_history instead of df—full history
-    for _, row in st.session_state.job_history.iterrows():
+    for _, row in filtered_jobs.iterrows():
         cols = st.columns([3, 1, 1, 1, 1, 1, 1])
         cols[0].write(row["id"])
         cols[1].write(f"{get_status_emoji(row['status'])} {row['status']}")
