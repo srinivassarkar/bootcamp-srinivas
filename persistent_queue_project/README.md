@@ -78,17 +78,17 @@ poetry run python -m streamlit run src/ui/ops.py
 
 ### Manager UI Displaying Job Queue and Actions
 
-![Manager UI Results](manager_result_screenshot.png)  
+![Manager UI Results](output_screenshots/manager_result_screenshot.png)  
 _View job details, retries, and take actions like resubmit or cancel._
 
 ### Filtering Jobs by Status in Manager UI
 
-![Filtering Jobs by Status](path/to/filter_screenshot.png)  
+![Filtering Jobs by Status](output_screenshots/filter_screenshot.png)  
 _Select a status to view specific jobs in the Manager UI._
 
 ### Ops UI Monitoring Job Progress in Real Time
 
-![Ops UI](path/to/ops_ui_screenshot.png)  
+![Ops UI](output_screenshots/ops_ui_screenshot.png)  
 _Monitor live job statuses and worker activity._
 
 ## How It Works

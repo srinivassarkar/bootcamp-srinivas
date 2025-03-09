@@ -3,9 +3,11 @@
 
 import os
 from datetime import datetime, timedelta
+
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
+
 from src.jobqueue import PersistentQInterface, get_queue
 
 load_dotenv()
@@ -53,8 +55,9 @@ if not df.empty:
     df["last_heartbeat"] = df["last_heartbeat"].fillna("N/A")
     if "retries" not in df.columns:
         df["retries"] = 0
+    # Keep all statuses in history
     st.session_state.job_history = pd.concat([st.session_state.job_history, df]).drop_duplicates(
-        subset=["id"], keep="last"
+        subset=["id", "status"], keep="last"
     )
 
 if st.button("🔍 Check Stalled Jobs", key="check_stalled"):
@@ -62,7 +65,7 @@ if st.button("🔍 Check Stalled Jobs", key="check_stalled"):
     st.success("Checked stalled jobs; requeued if needed.")
     st.rerun()
 
-# Filter by status
+# Filter by status (case-insensitive)
 status_options = [
     "All",
     "PENDING",
@@ -76,7 +79,9 @@ selected_status = st.selectbox("Filter by Status", status_options, index=0)
 filtered_jobs = (
     st.session_state.job_history
     if selected_status == "All"
-    else st.session_state.job_history[st.session_state.job_history["status"] == selected_status]
+    else st.session_state.job_history[
+        st.session_state.job_history["status"].str.upper() == selected_status.upper()
+    ]
 )
 
 # Auto-refresh every ~5s
@@ -135,7 +140,7 @@ else:
                     on_click=resubmit_job,
                     args=(row["id"],),
                 )
-            if row["status"] in ["PENDING", "FAILED", "UNPROCESSABLE"]:
+            if row["status"] in ["PENDING", "FAILED", "UNPROCESSABLE", "PROCESSING"]:
                 st.button(
                     "🛑 Cancel", key=f"cancel_{job_id_hash}", on_click=cancel_job, args=(row["id"],)
                 )

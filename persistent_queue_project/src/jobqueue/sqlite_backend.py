@@ -230,11 +230,12 @@ class PersistentQSQLite:
                     )
                     logger.warning(f"Job {job_id} failed, retries={retries}, marked UNPROCESSABLE")
 
-    def get_status(self) -> List[Dict[str, str]]:
-        """Retrieve all job statuses."""
+    def get_status(self) -> list[dict]:
         with self._lock:
             with self._get_conn() as conn:
-                return [dict(row) for row in conn.execute("SELECT * FROM jobs")]
+                cursor = conn.cursor()
+                cursor.execute("SELECT id, status, consumer_id, last_heartbeat, retries FROM jobs")
+                return [dict(row) for row in cursor.fetchall()]
 
     def resubmit(self, job_id: str) -> None:
         """Reset FAILED job to PENDING."""
