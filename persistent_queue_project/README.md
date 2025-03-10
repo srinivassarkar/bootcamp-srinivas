@@ -91,6 +91,116 @@ _Select a status to view specific jobs in the Manager UI._
 ![Ops UI](output_screenshots/ops_ui_screenshot.png)  
 _Monitor live job statuses and worker activity._
 
+
+# Testing Job States Step-by-Step
+
+Here’s how you can test the system to see how it handles jobs in `PROCESSING`, `FAILED`, and `UNPROCESSABLE` states:
+
+## Prerequisites
+Ensure you’ve set up the project (`poetry install`, `.env configured`).
+
+Run the system: `./run.sh`.
+
+---
+
+## 1. Start the System and Open UIs
+**Command:** `./run.sh`
+
+- **Manager UI:** `poetry run streamlit run src/ui/manager.py`  
+  Open [http://localhost:8501](http://localhost:8501), log in (default: `secure123`).
+
+- **Ops UI:** [http://localhost:8502](http://localhost:8502)  
+
+- **Logs:** `tail -f logs/consumer_*.log logs/jobqueue.log`
+
+---
+
+## 2. Observe a Job in `PROCESSING`
+**What to Do:**  
+In Manager UI, wait for a job to show `PROCESSING` (takes a few seconds after `PENDING`). Note its ID (e.g., `data/files/abc123.txt`) and `consumer_id`.
+
+**What You’ll See:**  
+- **UI:** `retries=0`, `last_heartbeat` updates ~every 1s, "Cancel" button available.
+- **Logs:** `consumer_<uuid>.log`: `Dequeued job_id: data/files/abc123.txt`, `Heartbeat sent`.
+
+**Purpose:** Confirms job is active, heartbeat works.
+
+---
+
+## 3. Force a Failure During `PROCESSING`
+**What to Do:**  
+While the job is `PROCESSING`, delete its file: `rm data/files/abc123.txt`. Watch Manager UI and logs for ~10-15s.
+
+**What You’ll See:**  
+- **Logs:** `consumer_<uuid>.log`: `Attempt 1/3 failed, Retrying in 1s`, `Attempt 2/3, 2s`, `Attempt 3/3, 4s`.
+- **UI:** `retries` climbs `0→1→2→3`, status stays `PROCESSING` during retries.
+
+**Purpose:** Tests automatic retries—system tries 3 times before giving up.
+
+---
+
+## 4. See a Job Become `UNPROCESSABLE`
+**What to Do:**  
+Let the 3 retries finish (takes ~7s total: `1s + 2s + 4s`).
+
+**What You’ll See:**  
+- **UI:** `retries=3`, status → `UNPROCESSABLE`, "Cancel" button remains.
+- **Logs:** `Max retries reached, marked failed`, `Marked job_id failed: data/files/abc123.txt`.
+
+**Purpose:** Shows what happens when retries fail—job’s done, flagged for review.
+
+---
+
+## 5. Simulate a `FAILED` Job (Manual Intervention)
+**What to Do:**  
+Find an `UNPROCESSABLE` job in UI, note its ID.
+
+**SQLite tweak (for demo):**  
+```bash
+sqlite3 data/queue.db "UPDATE jobs SET status='FAILED', retries=1 WHERE id='data/files/abc123.txt';"
+```
+
+**Refresh Manager UI:**  
+Refresh the Manager UI (auto-refreshes every ~5s).
+
+**What You’ll See:**  
+- **UI:** Status → `FAILED`, `retries=1`, "Resubmit" and "Cancel" buttons appear.
+- **Logs:** No change unless resubmitted.
+
+**Purpose:** Tests manual resubmit—mimics a job marked `FAILED` mid-process.
+
+---
+
+## 6. Resubmit or Cancel
+**Resubmit:**  
+Click "Resubmit" on a `FAILED` job.
+
+- **UI:** Status → `PENDING`, `retries` stays, job restarts.
+- **Logs:** `Resubmitted job_id: data/files/abc123.txt`.
+
+**Cancel:**  
+Click "Cancel" on `PROCESSING`, `FAILED`, or `UNPROCESSABLE`.
+
+- **UI:** Status → `CANCELED`.
+- **Logs:** `Canceled job_id: data/files/abc123.txt`.
+
+**Purpose:** Confirms UI control over failed jobs.
+
+---
+
+## 7. Crash a Consumer 
+**What to Do:**  
+`ps aux | grep consumer`, `kill -9 <pid>` (one of 10). Watch UI/logs ~30-40s.
+
+**What You’ll See:**  
+- **UI:** `PROCESSING` → `PENDING`, new `consumer_id` takes it.
+- **Logs:** `jobqueue.log`: `Checked and requeued stalled jobs`.
+
+**Purpose:** Proves heartbeat crash recovery.
+
+
+
+
 ## How It Works
 
 Here’s a simple explanation of how everything fits together:
