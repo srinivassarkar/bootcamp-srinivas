@@ -298,7 +298,7 @@ poetry run pytest tests/ -v
 4. **What if the entire system crashes?**
 
    - Tasks are safely stored in SQLite.
-   - Restart with `./run.sh`, and it resumes right where it stopped—no data lost.
+   - Restart with `poetry run supervisord -c supervisord.conf`, and it resumes right where it stopped—no data lost.
 
 5. **How do I add more workers?**
 
@@ -308,6 +308,8 @@ poetry run pytest tests/ -v
 6. **Does it work as intended?**
    - Absolutely—tasks flow from `PENDING` to `PROCESSING` to `COMPLETED`, with retries for failures and recovery from crashes, all visible in the UI and logs.
    - **Feedback: Doesn’t Work as Designed – Resolved**: The latest updates to `consumer.py`, `sqlite_backend.py`, and `manager.py` ensure full functionality.
-   - **Test**: Run `./run.sh`, crash a worker—UI and logs confirm the system recovers and completes tasks as designed.
+   - **Test**: Start the system with your usual command (e.g., running the producer script), then crash a worker—say, by running ```kill -9 <pid>``` on its process ID. Check the UI and logs afterward; you’ll see the system recover and complete the tasks like a champ.
+
+
 
 ---
